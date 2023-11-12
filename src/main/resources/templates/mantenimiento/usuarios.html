@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mantenimiento de Usuarios</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/sweetalert2.min.css}">
+</head>
+<body class="bg-info-subtle">
+	<nav class="navbar navbar-expand-lg bg-body-tertiary">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/}">
+				<img th:src="@{/img/logo.png}" width="100px">
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPrincipal" aria-controls="navbarPrincipal" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarPrincipal">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<th:block th:if="${usuario.getRol().getNomRol().equals('Administrador')}">
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/usuario/mantenimiento}"><i class="bi bi-people"></i> Usuarios</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/rol/mantenimiento}"><i class="bi bi-diagram-3"></i> Roles</a>
+						</li>
+					</th:block>
+					<th:block th:if="${usuario.getRol().getNomRol().equals('Gestor de Inventario')}">
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/productoFarmaceutico/mantenimiento}"><i class="bi bi-boxes"></i> Productos Farmacéuticos</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/dispositivoMedico/mantenimiento}"><i class="bi bi-boxes"></i> Dispositivos Médicos</a>
+						</li>
+					</th:block>
+					<li th:if="${usuario.getRol().getNomRol().equals('Solicitante')}" class="nav-item">
+						<a class="nav-link" th:href="@{/solicitudAbastecimiento/generar}"><i class="bi bi-file-earmark-text"></i> Generar Solicitud de Abastecimiento</a>
+					</li>
+					<li th:if="${usuario.getRol().getNomRol().equals('Evaluador')}" class="nav-item">
+						<a class="nav-link" th:href="@{/solicitudAbastecimiento/evaluar}"><i class="bi bi-file-earmark-check"></i> Evaluar Solicitud de Abastecimiento</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="bi bi-person-badge"></i> Usuario
+						</a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" th:href="@{/usuario/datosPersonales}"><i class="bi bi-person-lines-fill"></i> Datos Personales</a></li>
+							<li><a class="dropdown-item" th:href="@{/usuario/cambiarContrasena}"><i class="bi bi-fingerprint"></i> Cambiar Contraseña</a></li>
+						</ul>
+					</li>
+				</ul>
+				<form th:action="@{/logout}" method="post">
+					<button type="submit" class="btn btn-outline-danger"><i class="bi bi-door-open"></i> Cerrar Sesión</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+	<div class="p-5">
+		<div class="p-5 bg-light">
+			<h1>Mantenimiento de Usuarios</h1>
+			<hr>
+			<button type="button" class="btn btn-outline-success my-3" data-bs-toggle="modal" data-bs-target="#modal-nuevo-usuario"><i class="bi bi-database-add"></i> Nuevo Usuario</button>
+			<table id="tablaUsuarios" class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Código</th>
+						<th>Usuario</th>
+						<th>Email</th>
+						<th>Rol</th>
+						<th>Estado</th>
+						<th colspan="2" class="text-center">Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="modal fade" id="modal-cambiar-perfil" tabindex="-1" aria-labelledby="modal-title-cambiar-perfil" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="modal-title-cambiar-perfil">Cambiar Perfil</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label class="form-label">Código:</label>
+						<input type="text" class="form-control" id="codUsua2" readonly>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Usuario:</label>
+						<input type="text" class="form-control" id="usuario2" readonly>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Rol actual:</label>
+						<input type="text" class="form-control" id="rolActual2" readonly>
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="nuevoRol2">Nuevo Rol:</label>
+						<select class="form-select" id="nuevoRol2">
+							<option value="-1">--Seleccionar una opción--</option>
+						</select>
+					</div>
+					<div id="error2" class="text-danger text-center">
+						
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" id="btn-actualizar-perfil"><i class="bi bi-pencil"></i> Actualizar Perfil</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="modal-nuevo-usuario" tabindex="-1" aria-labelledby="modal-title-nuevo-usuario" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="modal-title-nuevo-usuario">Nuevo Usuario</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form action="#">
+						<div class="mb-3">
+							<label class="form-label" for="nomUsua1">Nombres:</label>
+							<input class="form-control" id="nomUsua1" type="text" autocomplete="off" placeholder="Ingresar nombres...">
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="apeUsua1">Apellidos:</label>
+							<input class="form-control" id="apeUsua1" type="text" autocomplete="off" placeholder="Ingresar apellidos...">
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="emailUsua1">Correo electrónico:</label>
+							<input class="form-control" id="emailUsua1" type="email" autocomplete="off" placeholder="Ingresar correo...">
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="rol">Rol:</label>
+							<select class="form-select" id="rol">
+								<option value="-1">--Seleccionar una opción--</option>
+							</select>
+						</div>
+						<div id="error1" class="text-danger text-center">
+							
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" id="btn-registrar-usuario"><i class="bi bi-database-add"></i> Registrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/sweetalert2.all.min.js}"></script>
+<script th:src="@{/js/jquery-3.2.1.slim.min.js}"></script>
+<script th:src="@{/js/mantenimiento/usuarios.js}"></script>
+</html>

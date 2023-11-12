@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Inicio de Sesión</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-info-subtle py-5">
+	<div class="bg-light p-5 container col-lg-4 col-md-6 col-sm-8 shadow-lg">
+		<h1>Iniciar Sesión</h1>
+		<hr>
+		<div th:if="${param.error}" class="alert alert-danger" role="alert">
+			Usuario y/o contraseñas incorrectos.
+		</div>
+		<div th:if="${param.logout}" class="alert alert-success" role="alert">
+			Sesión Finalizada.
+		</div>
+		<form th:action="@{/login}" method="post">
+			<div class="mb-3">
+				<label class="form-label" for="codUsua">Usuario:</label>
+				<input class="form-control" id="codUsua" name="codUsua" type="text" autocomplete="off" placeholder="Ingresar usuario..." required>
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="claveUsua">Contraseña:</label>
+				<input class="form-control" id="claveUsua" name="claveUsua" type="password" autocomplete="off" placeholder="Ingresar contraseña..." required>
+			</div>
+			<button type="submit" class="btn btn-primary">Ingresar</button>
+		</form>
+	</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</html>
